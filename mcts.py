@@ -21,7 +21,9 @@ class Node:
         return self.no_visits
 
     def uct(self):
-        return (self.value / self.no_visits) + (np.sqrt(2 * np.log(self.visits)) / self.visits)
+        if self.visits() == 0:
+            return np.infty
+        return (self.value / self.no_visits) + (np.sqrt(2 * np.log(self.no_visits)) / self.no_visits)
 
     def expand(self, move, state):
         child = Node(col=move, _parent=self, _board=state, root=False)
@@ -91,7 +93,7 @@ class MCTS:
         if len(node.children) == 0:
 
             return None
-        return max(node.children, key=node.uct())
+        return max(node.children, key=Node.uct)
 
     def update_stats(self, node, result):
         node.value += result
