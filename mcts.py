@@ -2,18 +2,20 @@ import random
 
 import numpy as np
 
-from game_finished_checker import check_if_game_finished, get_available_moves, make_move, COMPUTER
+from game_finished_checker import check_if_game_finished, get_available_moves, make_move, COMPUTER,  get_result
 from copy import deepcopy
 
 
 class Node:
-    def __init__(self, _board, _parent, col, root=False):
+    def __init__(self, _board, _parent, col, player=COMPUTER, root=False):
         self.children = []
-        self.board = _board
+        self.board = deepcopy(_board)
         self.parent = _parent
         self.value = 0
         self.no_visits = 0
         self.is_root = root
+        self.player = player
+        self.is_leaf = False
         # to add function chcecking legal moves from this state
         self.unexpanded_moves = get_available_moves(_board)
         self.column_val = col  # this node was produced by a move in this column
@@ -44,38 +46,41 @@ class MCTS:
         return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
-        mcts_board = deepcopy(root.board)
+        # if get_available_moves(root.board):
+        #     mcts_board = deepcopy(root.board)
+        #     move = self.get_random_move(root.board)
+        #     mcts_board = make_move(mcts_board, move, self.player_id)
+        #     child = root.expand(move=move, state=mcts_board)
         while self.check_time():
             # selection + expansion
-            leaf, mcts_board = self.traverse(root, mcts_board)
+            leaf = self.traverse(root, deepcopy(root.board))
             # simulation
-            simulation_result = self.rollout(mcts_board)
+            simulation_result = self.rollout(leaf)
             # backpropagation
             self.backpropagate(leaf, simulation_result)
         chosen_node = self.best_child(root)
         return chosen_node.column_val
 
     def traverse(self, node: Node, mcts_board):
-        while node.children != [] and self.check_time():
+        while node.children != [] and node.unexpanded_moves == [] and self.check_time():
             # selection: select best child
-            new_node = self.best_uct(node)
-            if new_node is not None:
-                mcts_board = make_move(mcts_board, new_node.column_val, self.player_id)
-            else:
-                break
+            node = self.best_uct(node)
 
         if node.unexpanded_moves != []:
             # then expansion: add one new child node
-            m = node.unexpanded_moves[random.choice(range(len(node.unexpanded_moves)))]
-            mcts_board = make_move(mcts_board, m, self.player_id)
-            node = node.expand(move=m, state=mcts_board)
-        return node, mcts_board
+            move = self.pick_random(node.unexpanded_moves)
+            mcts_board = make_move(deepcopy(mcts_board), move, self.player_id)
+            node = node.expand(move=move, state=mcts_board)
+        return node
 
-    def rollout(self, mcts_board):
+    def rollout(self, node):
+        mcts_board = deepcopy(node.board)
+        player = node.player
         while self.non_terminal(mcts_board) and self.check_time():
             available_moves = get_available_moves(mcts_board)
+            player *= -1
             mcts_board = make_move(mcts_board, available_moves[random.choice(range(len(available_moves)))],
-                                   self.player_id)
+                                   player=player)
         return self.result(mcts_board)
 
     def backpropagate(self, node: Node, result):
@@ -88,6 +93,10 @@ class MCTS:
         # if node.children == []:
         #     return None
         return max(node.children, key=Node.uct)
+
+    def get_random_move(self, board):
+        l = get_available_moves(board)
+        return self.pick_random(l)
 
     def pick_random(self, children):
         return children[random.choice(range(len(children)))]
@@ -106,5 +115,4 @@ class MCTS:
         return not check_if_game_finished(board) and len(get_available_moves(board)) > 0
 
     def result(self, board):
-        from game_finished_checker import get_result
         return get_result(board)
