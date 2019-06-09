@@ -3,6 +3,7 @@ import random
 import numpy as np
 
 from game_finished_checker import check_if_game_finished, get_available_moves, make_move, COMPUTER
+from copy import deepcopy
 
 
 class Node:
@@ -43,7 +44,7 @@ class MCTS:
         return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
-        mcts_board = root.board
+        mcts_board = deepcopy(root.board)
         while self.check_time():
             # selection + expansion
             leaf, mcts_board = self.traverse(root, mcts_board)
@@ -55,7 +56,7 @@ class MCTS:
         return chosen_node.column_val
 
     def traverse(self, node: Node, mcts_board):
-        while node.children != []:
+        while node.children != [] and self.check_time():
             # selection: select best child
             new_node = self.best_uct(node)
             if new_node is not None:
@@ -71,7 +72,7 @@ class MCTS:
         return node, mcts_board
 
     def rollout(self, mcts_board):
-        while self.non_terminal(mcts_board):
+        while self.non_terminal(mcts_board) and self.check_time():
             available_moves = get_available_moves(mcts_board)
             mcts_board = make_move(mcts_board, available_moves[random.choice(range(len(available_moves)))],
                                    self.player_id)
@@ -94,7 +95,6 @@ class MCTS:
     def best_uct(self, node: Node):
         # print(node.children)
         if len(node.children) == 0:
-
             return None
         return max(node.children, key=Node.uct)
 
@@ -104,7 +104,6 @@ class MCTS:
 
     def non_terminal(self, board):
         return not check_if_game_finished(board) and len(get_available_moves(board)) > 0
-
 
     def result(self, board):
         from game_finished_checker import get_result
