@@ -1,3 +1,4 @@
+import numpy as np
 import random
 
 
@@ -9,14 +10,22 @@ class Node:
         self.value = 0
         self.no_visits = 0
         self.is_root = root
-        self.column_val = col
+        #to add function chcecking legal moves from yhis state
+        self.unexpanded_moves = []
+        self.column_val = col   #this node was produced by a move in this column
 
     def visits(self):
         return self.no_visits
 
     def uct(self):
-        # todo: implement uct
-        return self.value
+        return (self.value / self.no_visits) + (np.sqrt(2 * np.log(self.visits) / self.visits))
+
+    def expand(self, move, state):
+        child = Node(col=move, _parent=self, _board=state, root=False)
+        self.unexpanded_moves.remove(move)
+        self.children.append(child)
+        return child
+
 
 
 class MCTS:
@@ -26,13 +35,16 @@ class MCTS:
 
     def monte_carlo_tree_search(self, root: Node):
         while self.check_time():
+            #selection
             leaf = self.traverse(root)
+            #expansion
             simulation_result = self.rollout(leaf)
+            #backpropagation
             self.backpropagate(leaf, simulation_result)
         return self.best_child(root)
 
     def traverse(self, node: Node):
-        while self.fully_expanded(node):
+        while self.not_fully_expanded(node):
             node = self.best_uct(node)
         return self.pick_univisted(node, node.children)
 
@@ -66,9 +78,9 @@ class MCTS:
         from game_finished_checker import check_if_game_finished, get_available_moves
         return not check_if_game_finished(node.board) and len(get_available_moves(node.board)) > 0
 
-    def fully_expanded(self, node):
-        # todo: check if nodes present in constructed tree
-        pass
+    def not_fully_expanded(self, node):
+        if node.children == [] or node.unexpanded_moves != []:
+            return True
 
     def result(self, node):
         # todo: check game result at this state (board)
