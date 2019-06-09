@@ -40,8 +40,7 @@ class Connect4:
         root = Node(_board=self.board, _parent=None, col=-1, root=True)
         mcts = MCTS()
         decision = mcts.monte_carlo_tree_search(root)
-        col = decision.column_val
-        self._move(player, col)
+        self._move(player, decision)
 
     def check_if_game_finished(self, row_id, col_id):
         from game_finished_checker import check_if_game_finished_at_row_col

@@ -40,7 +40,7 @@ class MCTS:
 
     def check_time(self):
         from time import time
-        return (time() - self.start_time) < 5000
+        return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
         mcts_board = root.board
@@ -51,10 +51,11 @@ class MCTS:
             simulation_result = self.rollout(mcts_board)
             # backpropagation
             self.backpropagate(leaf, simulation_result)
-        return self.best_child(root)
+        chosen_node = self.best_child(root)
+        return chosen_node.column_val
 
     def traverse(self, node: Node, mcts_board):
-        while self.not_fully_expanded(node):
+        while node.children != []:
             # selection: select best child
             new_node = self.best_uct(node)
             if new_node is not None:
@@ -83,13 +84,15 @@ class MCTS:
         self.backpropagate(node.parent, result)
 
     def best_child(self, node: Node):
-        return max(node.children, key=node.visits)
+        if node.children == []:
+            return None
+        return max(node.children, key=Node.uct)
 
     def pick_random(self, children):
         return children[random.choice(range(len(children)))]
 
     def best_uct(self, node: Node):
-        print(node.children)
+        # print(node.children)
         if len(node.children) == 0:
 
             return None
@@ -101,10 +104,6 @@ class MCTS:
 
     def non_terminal(self, board):
         return not check_if_game_finished(board) and len(get_available_moves(board)) > 0
-
-    def not_fully_expanded(self, node):
-        if node.children == [] or node.unexpanded_moves != []:
-            return True
 
     def result(self, board):
         from game_finished_checker import get_result
