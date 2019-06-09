@@ -61,7 +61,7 @@ class MCTS:
             #then expansion: add one new child node
             m = node.unexpanded_moves[random.choice(range(len(node.unexpanded_moves)))]
             mcts_board = make_move(mcts_board, m, self.player_id)
-            node = node.expand(node, m, mcts_board)
+            node = node.expand(node, move=m, state=mcts_board)
         return node, mcts_board
 
     def rollout(self, mcts_board):
@@ -75,7 +75,7 @@ class MCTS:
         if node.is_root:
             return
         node.stats = self.update_stats(node, result)
-        self.backpropagate(node.parent)
+        self.backpropagate(node.parent, result)
 
     def best_child(self, node: Node):
         return max(node.children, key=node.visits)
