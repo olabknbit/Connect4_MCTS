@@ -93,7 +93,7 @@ def _print_board(board):
 
 def make_move(board, col, player):
     if not is_valid_move(board, col):
-        print(player + ": invalid move!")
+        print(get_player_symbol(player) + ": invalid move!")
     else:
         for row in range(HEIGHT):
             if board[row][col] == 0:

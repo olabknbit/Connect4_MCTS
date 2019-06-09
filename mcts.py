@@ -89,7 +89,6 @@ class MCTS:
         return children[random.choice(range(len(children)))]
 
     def best_uct(self, node: Node):
-        print(node.children)
         if len(node.children) == 0:
 
             return None
