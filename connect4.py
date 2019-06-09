@@ -43,13 +43,10 @@ class Connect4:
         self._move(player, col)
 
     def check_if_game_finished(self, row_id, col_id):
-        from game_finished_checker import check_diagonal_right, check_horizontal, check_diagonal_left, check_vertical
+        from game_finished_checker import check_if_game_finished_at_row_col
         player = self.board[row_id][col_id]
 
-        return check_horizontal(self.board, player, row_id, col_id) \
-               or check_vertical(self.board, player, row_id, col_id) \
-               or check_diagonal_right(self.board, player, row_id, col_id) \
-               or check_diagonal_left(self.board, player, row_id, col_id)
+        return check_if_game_finished_at_row_col(self.board, row_id, col_id, player)
 
     def blue_move(self, col):
         row, col = self._move(COMPUTER, col)
