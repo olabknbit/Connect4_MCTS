@@ -57,40 +57,13 @@ class Connect4:
         self._move(player, col)
 
     def check_if_game_finished(self, row_id, col_id):
+        from game_finished_checker import check_diagonal_right, check_horizontal, check_diagonal_left, check_vertical
         player = self.board[row_id][col_id]
 
-        def check_horizontal(row_id, col_id):
-            row = self.board[row_id]
-
-            for i in range(-3, 3):
-                if row[col_id + i:col_id + i + 4] == ([player] * 4):
-                    return True
-            return False
-
-        def check_vertical(row_id, col_id):
-            column = [row[col_id] for row in self.board[row_id - 3:row_id + 1]]
-            return row_id >= 3 and column == ([player] * 4)
-
-        def check_diagonal_right(row_id, col_id):
-            for i in range(-3, 3):
-                diag = [row[col_id + j + i] if col_id + j + i < WIDTH else 0 for j, row in
-                        enumerate(self.board[row_id + i:row_id + i + 4])]
-                if diag == ([player] * 4):
-                    return True
-            return False
-
-        def check_diagonal_left(row_id, col_id):
-            for i in range(-3, 3):
-                diag = [row[col_id - j - i] if col_id - j - i < WIDTH else 0 for j, row in
-                        enumerate(self.board[row_id + i:row_id + i + 4])]
-                if diag == ([player] * 4):
-                    return True
-            return False
-
-        return check_horizontal(row_id, col_id) \
-               or check_vertical(row_id, col_id) \
-               or check_diagonal_right(row_id, col_id) \
-               or check_diagonal_left(row_id, col_id)
+        return check_horizontal(self.board, player, row_id, col_id) \
+               or check_vertical(self.board, player, row_id, col_id) \
+               or check_diagonal_right(self.board, player, row_id, col_id) \
+               or check_diagonal_left(self.board, player, row_id, col_id)
 
     def blue_move(self, col):
         row, col = self._move(self.BLUE, col)
