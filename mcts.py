@@ -63,8 +63,8 @@ class MCTS:
         node.value += result
 
     def non_terminal(self, node):
-        # todo: check if game not finished
-        pass
+        from game_finished_checker import check_if_game_finished
+        return not check_if_game_finished(node.board)
 
     def fully_expanded(self, node):
         # todo: check if nodes present in constructed tree
