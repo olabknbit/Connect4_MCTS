@@ -1,6 +1,8 @@
 # board has 6 rows and 7 cols
 WIDTH = 7
 HEIGHT = 6
+BLUE = -1
+RED = 1
 
 
 def check_horizontal(board, player, row_id, col_id):
@@ -61,3 +63,34 @@ def get_available_moves(board):
         if is_valid_move(board, col):
             moves.append(col)
     return moves
+
+
+def get_player_symbol(player):
+    if player == BLUE:
+        return "x"
+    elif player == RED:
+        return "o"
+    else:
+        return "."
+
+
+def print_board(board):
+    for i in range(len(board)):
+        row = board[-1 - i]
+        row_str = ""
+        for el in row:
+            row_str += get_player_symbol(el) + " "
+        print(row_str)
+    print()
+
+
+def make_move(board, col, player):
+    if not is_valid_move(board, col):
+        print(player + ": invalid move!")
+    else:
+        for row in range(HEIGHT):
+            if board[row][col] == 0:
+                board[row][col] = player
+                break
+    print_board(board)
+    return board
