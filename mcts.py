@@ -15,8 +15,9 @@ class Node:
         return self.no_visits
 
     def uct(self):
-        #todo: implement uct
+        # todo: implement uct
         return self.value
+
 
 class MCTS:
 
@@ -59,24 +60,20 @@ class MCTS:
         return max(node.children, key=node.uct)
 
     def update_stats(self, node, result):
-        node.value +=result
+        node.value += result
 
     def non_terminal(self, node):
-        #todo: check if game not finished
+        # todo: check if game not finished
         pass
 
     def fully_expanded(self, node):
-        #todo: check if nodes present in constructed tree
+        # todo: check if nodes present in constructed tree
         pass
 
     def result(self, node):
-        #todo: check game result at this state (board)
+        # todo: check game result at this state (board)
         pass
 
     def pick_univisted(self, node, children):
-        #todo: return either unvisited children or self - when?
+        # todo: return either unvisited children or self - when?
         pass
-
-
-
-
