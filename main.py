@@ -22,7 +22,7 @@ def play_with_comptuter():
     while True:
         col = read_input("HUMAN")
         c4.red_move(col)
-        c4.make_random_move(COMPUTER)
+        c4.make_mcts_move(COMPUTER)
 
 
 def multiplayer():

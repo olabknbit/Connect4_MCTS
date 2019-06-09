@@ -19,6 +19,7 @@ class Connect4:
     def _move(self, player, col):
         if not is_valid_move(self.board, col):
             print(self.get_player_name(player) + ": invalid move!")
+            exit(1)
         else:
             for row in range(HEIGHT):
                 if self.board[row][col] == 0:
