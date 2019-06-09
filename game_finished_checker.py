@@ -47,3 +47,9 @@ def check_if_game_finished(board):
                 return True
 
     return False
+
+
+def is_valid_move(board, col):
+    if col < 0 or col > HEIGHT:
+        return False
+    return board[HEIGHT - 1][-1] == 0

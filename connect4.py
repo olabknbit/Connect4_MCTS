@@ -1,6 +1,6 @@
 import random
 
-from game_finished_checker import HEIGHT, WIDTH
+from game_finished_checker import HEIGHT, WIDTH, is_valid_move
 from mcts import Node, MCTS
 
 
@@ -11,11 +11,6 @@ class Connect4:
         self.last_move = None, None
         self.BLUE = -1
         self.RED = 1
-
-    def is_valid_move(self, col):
-        if col < 0 or col > HEIGHT:
-            return False
-        return self.board[HEIGHT - 1][-1] == 0
 
     def get_player_name(self, player):
         if player == self.BLUE:
@@ -32,7 +27,7 @@ class Connect4:
             return "."
 
     def _move(self, player, col):
-        if not self.is_valid_move(col):
+        if not is_valid_move(self.board, col):
             print(self.get_player_name(player) + ": invalid move!")
         else:
             for row in range(HEIGHT):
@@ -47,7 +42,7 @@ class Connect4:
         valid = False
         while not valid:
             col = random.choice(range(WIDTH))
-            valid = self.is_valid_move(col)
+            valid = is_valid_move(self.board, col)
         self._move(player, col)
 
     def make_mcts_move(self, player):
