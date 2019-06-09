@@ -9,6 +9,9 @@ def read_input(team):
             i = int(input(team + ": Enter the number of column:"))
             if 0 <= i <= 6:
                 col = i
+
+        except KeyboardInterrupt:
+            raise
         except:
             continue
     return col
@@ -33,4 +36,4 @@ def multiplayer():
 
 if __name__ == '__main__':
     c4 = Connect4()
-    multiplayer()
+    play_with_comptuter()
