@@ -47,7 +47,8 @@ class Connect4:
 
     def make_mcts_move(self, player):
         root = Node(_board=self.board, _parent=None, col=-1, root=True)
-        decision = MCTS.monte_carlo_tree_search(root)
+        mcts = MCTS()
+        decision = mcts.monte_carlo_tree_search(root)
         col = decision.column_val
         self._move(player, col)
 
