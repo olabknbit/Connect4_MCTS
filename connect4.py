@@ -1,5 +1,6 @@
 import random
 
+from . import Node, MCTS
 
 class Connect4:
     def __init__(self):
@@ -48,6 +49,12 @@ class Connect4:
         while not valid:
             col = random.choice(range(self.width))
             valid = self.is_valid_move(col)
+        self._move(player, col)
+
+    def make_mcts_move(self, player):
+        root = Node(_board=self.board, _parent=None, col=-1, root=True)
+        decision = MCTS.monte_carlo_tree_search(root)
+        col = decision.column_val
         self._move(player, col)
 
     def check_if_game_finished(self, row_id, col_id):
@@ -106,3 +113,5 @@ class Connect4:
                 row_str += self.get_player_symbol(el) + " "
             print(row_str)
         print()
+
+
