@@ -37,18 +37,29 @@ def check_diagonal_left(board, player, row_id, col_id):
     return False
 
 
-def check_if_game_finished(board):
+def check_if_game_finished_at_row_col(board, row_id, col_id, player):
+    return check_horizontal(board, player, row_id, col_id) \
+           or check_vertical(board, player, row_id, col_id) \
+           or check_diagonal_right(board, player, row_id, col_id) \
+           or check_diagonal_left(board, player, row_id, col_id)
+
+
+def get_result(board):
     for row_id in range(HEIGHT):
         for col_id in range(WIDTH):
-
             player = board[row_id][col_id]
-            if check_horizontal(board, player, row_id, col_id) \
-                    or check_vertical(board, player, row_id, col_id) \
-                    or check_diagonal_right(board, player, row_id, col_id) \
-                    or check_diagonal_left(board, player, row_id, col_id):
-                return True
+            if check_if_game_finished_at_row_col(board, row_id, col_id, player):
+                if player == COMPUTER:
+                    return 1
+                if player == HUMAN:
+                    return 0
+                else:
+                    return 0.5
+    return -1
 
-    return False
+
+def check_if_game_finished(board):
+    return get_result(board) >= 0
 
 
 def is_valid_move(board, col):

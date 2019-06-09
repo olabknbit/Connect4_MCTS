@@ -1,5 +1,6 @@
-import numpy as np
 import random
+
+import numpy as np
 
 
 class Node:
@@ -10,9 +11,9 @@ class Node:
         self.value = 0
         self.no_visits = 0
         self.is_root = root
-        #to add function chcecking legal moves from yhis state
+        # to add function chcecking legal moves from yhis state
         self.unexpanded_moves = []
-        self.column_val = col   #this node was produced by a move in this column
+        self.column_val = col  # this node was produced by a move in this column
 
     def visits(self):
         return self.no_visits
@@ -27,7 +28,6 @@ class Node:
         return child
 
 
-
 class MCTS:
     def __init__(self):
         from time import time
@@ -39,11 +39,11 @@ class MCTS:
 
     def monte_carlo_tree_search(self, root: Node):
         while self.check_time():
-            #selection
+            # selection
             leaf = self.traverse(root)
-            #expansion
+            # expansion
             simulation_result = self.rollout(leaf)
-            #backpropagation
+            # backpropagation
             self.backpropagate(leaf, simulation_result)
         return self.best_child(root)
 
@@ -86,9 +86,9 @@ class MCTS:
         if node.children == [] or node.unexpanded_moves != []:
             return True
 
-    def result(self, node):
-        # todo: check game result at this state (board)
-        pass
+    def result(self, board):
+        from game_finished_checker import get_result
+        return get_result(board)
 
     def pick_univisted(self, node, children):
         # todo: return either unvisited children or self - when?
