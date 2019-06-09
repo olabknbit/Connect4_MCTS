@@ -1,22 +1,16 @@
 import random
 
-from . import Node, MCTS
+from game_finished_checker import HEIGHT, WIDTH, is_valid_move
+from mcts import Node, MCTS
+
 
 class Connect4:
     def __init__(self):
-        # board has 6 rows and 7 cols
-        self.width = 7
-        self.height = 6
-        self.board = [[0 for _ in range(self.width)] for _ in range(self.height)]
+        self.board = [[0 for _ in range(WIDTH)] for _ in range(HEIGHT)]
         # last move is (row, col)
         self.last_move = None, None
         self.BLUE = -1
         self.RED = 1
-
-    def is_valid_move(self, col):
-        if col < 0 or col > self.height:
-            return False
-        return self.board[self.height - 1][-1] == 0
 
     def get_player_name(self, player):
         if player == self.BLUE:
@@ -33,10 +27,10 @@ class Connect4:
             return "."
 
     def _move(self, player, col):
-        if not self.is_valid_move(col):
+        if not is_valid_move(self.board, col):
             print(self.get_player_name(player) + ": invalid move!")
         else:
-            for row in range(self.height):
+            for row in range(HEIGHT):
                 if self.board[row][col] == 0:
                     self.board[row][col] = player
                     self.last_move = row, col
@@ -47,8 +41,8 @@ class Connect4:
     def make_random_move(self, player):
         valid = False
         while not valid:
-            col = random.choice(range(self.width))
-            valid = self.is_valid_move(col)
+            col = random.choice(range(WIDTH))
+            valid = is_valid_move(self.board, col)
         self._move(player, col)
 
     def make_mcts_move(self, player):
@@ -58,40 +52,13 @@ class Connect4:
         self._move(player, col)
 
     def check_if_game_finished(self, row_id, col_id):
+        from game_finished_checker import check_diagonal_right, check_horizontal, check_diagonal_left, check_vertical
         player = self.board[row_id][col_id]
 
-        def check_horizontal(row_id, col_id):
-            row = self.board[row_id]
-
-            for i in range(-3, 3):
-                if row[col_id + i:col_id + i + 4] == ([player] * 4):
-                    return True
-            return False
-
-        def check_vertical(row_id, col_id):
-            column = [row[col_id] for row in self.board[row_id - 3:row_id + 1]]
-            return row_id >= 3 and column == ([player] * 4)
-
-        def check_diagonal_right(row_id, col_id):
-            for i in range(-3, 3):
-                diag = [row[col_id + j + i] if col_id + j + i < self.width else 0 for j, row in
-                        enumerate(self.board[row_id + i:row_id + i + 4])]
-                if diag == ([player] * 4):
-                    return True
-            return False
-
-        def check_diagonal_left(row_id, col_id):
-            for i in range(-3, 3):
-                diag = [row[col_id - j - i] if col_id - j - i < self.width else 0 for j, row in
-                        enumerate(self.board[row_id + i:row_id + i + 4])]
-                if diag == ([player] * 4):
-                    return True
-            return False
-
-        return check_horizontal(row_id, col_id) \
-               or check_vertical(row_id, col_id) \
-               or check_diagonal_right(row_id, col_id) \
-               or check_diagonal_left(row_id, col_id)
+        return check_horizontal(self.board, player, row_id, col_id) \
+               or check_vertical(self.board, player, row_id, col_id) \
+               or check_diagonal_right(self.board, player, row_id, col_id) \
+               or check_diagonal_left(self.board, player, row_id, col_id)
 
     def blue_move(self, col):
         row, col = self._move(self.BLUE, col)
@@ -113,5 +80,3 @@ class Connect4:
                 row_str += self.get_player_symbol(el) + " "
             print(row_str)
         print()
-
-
