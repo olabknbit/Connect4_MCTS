@@ -1,6 +1,6 @@
 import random
 
-from game_finished_checker import HEIGHT, WIDTH, BLUE, RED, is_valid_move, print_board
+from game_finished_checker import HEIGHT, WIDTH, COMPUTER, HUMAN, is_valid_move, _print_board
 from mcts import Node, MCTS
 
 
@@ -11,10 +11,10 @@ class Connect4:
         self.last_move = None, None
 
     def get_player_name(self, player):
-        if player == BLUE:
-            return "BLUE(x)"
+        if player == COMPUTER:
+            return "COMPUTER(x)"
         else:
-            return "RED(o)"
+            return "HUMAN(o)"
 
     def _move(self, player, col):
         if not is_valid_move(self.board, col):
@@ -25,7 +25,7 @@ class Connect4:
                     self.board[row][col] = player
                     self.last_move = row, col
                     break
-        print_board(self.board)
+        _print_board(self.board)
         return row, col
 
     def make_random_move(self, player):
@@ -52,13 +52,16 @@ class Connect4:
                or check_diagonal_left(self.board, player, row_id, col_id)
 
     def blue_move(self, col):
-        row, col = self._move(BLUE, col)
+        row, col = self._move(COMPUTER, col)
         if self.check_if_game_finished(row, col):
-            print("BLUE won")
+            print("COMPUTER won")
             exit(0)
 
     def red_move(self, col):
-        row, col = self._move(RED, col)
+        row, col = self._move(HUMAN, col)
         if self.check_if_game_finished(row, col):
-            print("RED won")
+            print("HUMAN won")
             exit(0)
+
+    def print_board(self):
+        _print_board(self.board)
