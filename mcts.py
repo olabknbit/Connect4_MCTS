@@ -40,7 +40,7 @@ class MCTS:
 
     def check_time(self):
         from time import time
-        return (time() - self.start_time) < 5000
+        return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
         mcts_board = root.board
