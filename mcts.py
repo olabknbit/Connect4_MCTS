@@ -84,8 +84,8 @@ class MCTS:
         self.backpropagate(node.parent, result)
 
     def best_child(self, node: Node):
-        if node.children == []:
-            return None
+        # if node.children == []:
+        #     return None
         return max(node.children, key=Node.uct)
 
     def pick_random(self, children):
@@ -104,6 +104,7 @@ class MCTS:
 
     def non_terminal(self, board):
         return not check_if_game_finished(board) and len(get_available_moves(board)) > 0
+
 
     def result(self, board):
         from game_finished_checker import get_result
