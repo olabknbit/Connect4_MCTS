@@ -5,39 +5,35 @@ COMPUTER = -1
 HUMAN = 1
 
 
-def check_horizontal(board, player, row_id, col_id):
-    row = board[row_id]
-
-    for i in range(-3, 3):
-        if row[col_id + i:col_id + i + 4] == ([player] * 4):
-            return True
-    return False
-
-
-def check_vertical(board, player, row_id, col_id):
-    column = [row[col_id] for row in board[row_id - 3:row_id + 1]]
-    return row_id >= 3 and column == ([player] * 4)
-
-
-def check_diagonal_right(board, player, row_id, col_id):
-    for i in range(-3, 3):
-        diag = [row[col_id + j + i] if col_id + j + i < WIDTH else 0 for j, row in
-                enumerate(board[row_id + i:row_id + i + 4])]
-        if diag == ([player] * 4):
-            return True
-    return False
-
-
-def check_diagonal_left(board, player, row_id, col_id):
-    for i in range(-3, 3):
-        diag = [row[col_id - j - i] if col_id - j - i < WIDTH else 0 for j, row in
-                enumerate(board[row_id + i:row_id + i + 4])]
-        if diag == ([player] * 4):
-            return True
-    return False
-
-
 def check_if_game_finished_at_row_col(board, row_id, col_id, player):
+    def check_horizontal(board, player, row_id, col_id):
+        row = board[row_id]
+
+        for i in range(-3, 3):
+            if row[col_id + i:col_id + i + 4] == ([player] * 4):
+                return True
+        return False
+
+    def check_vertical(board, player, row_id, col_id):
+        column = [row[col_id] for row in board[row_id - 3:row_id + 1]]
+        return row_id >= 3 and column == ([player] * 4)
+
+    def check_diagonal_right(board, player, row_id, col_id):
+        for i in range(-3, 3):
+            diag = [row[col_id + j + i] if col_id + j + i < WIDTH else 0 for j, row in
+                    enumerate(board[row_id + i:row_id + i + 4])]
+            if diag == ([player] * 4):
+                return True
+        return False
+
+    def check_diagonal_left(board, player, row_id, col_id):
+        for i in range(-3, 3):
+            diag = [row[col_id - j - i] if col_id - j - i < WIDTH else 0 for j, row in
+                    enumerate(board[row_id + i:row_id + i + 4])]
+            if diag == ([player] * 4):
+                return True
+        return False
+
     return check_horizontal(board, player, row_id, col_id) \
            or check_vertical(board, player, row_id, col_id) \
            or check_diagonal_right(board, player, row_id, col_id) \
@@ -103,5 +99,4 @@ def make_move(board, col, player):
             if board[row][col] == 0:
                 board[row][col] = player
                 break
-    _print_board(board)
     return board
