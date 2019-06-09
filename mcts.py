@@ -29,9 +29,13 @@ class Node:
 
 
 class MCTS:
+    def __init__(self):
+        from time import time
+        self.start_time = time()
 
     def check_time(self):
-        return True
+        from time import time
+        return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
         while self.check_time():
