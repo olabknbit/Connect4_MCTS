@@ -1,5 +1,5 @@
 from connect4 import Connect4
-from game_finished_checker import BLUE
+from game_finished_checker import COMPUTER
 
 
 def read_input(team):
@@ -17,9 +17,9 @@ def read_input(team):
 def play_with_comptuter():
     c4.print_board()
     while True:
-        col = read_input("RED")
+        col = read_input("HUMAN")
         c4.red_move(col)
-        c4.make_random_move(BLUE)
+        c4.make_random_move(COMPUTER)
 
 
 def multiplayer():
