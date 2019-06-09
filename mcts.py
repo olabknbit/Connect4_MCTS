@@ -54,8 +54,11 @@ class MCTS:
     def traverse(self, node: Node, mcts_board):
         while self.not_fully_expanded(node):
             # selection: select best child
-            node = self.best_uct(node)
-            mcts_board = make_move(mcts_board, node.column_val, self.player_id)
+            new_node = self.best_uct(node)
+            if new_node is not None:
+                mcts_board = make_move(mcts_board, new_node.column_val, self.player_id)
+            else:
+                break
 
         if node.unexpanded_moves != []:
             # then expansion: add one new child node
@@ -84,7 +87,11 @@ class MCTS:
         return children[random.choice(range(len(children)))]
 
     def best_uct(self, node: Node):
-        return max(node.children, key=node.uct)
+        print(node.children)
+        if len(node.children) == 0:
+
+            return None
+        return max(node.children, key=node.uct())
 
     def update_stats(self, node, result):
         node.value += result
