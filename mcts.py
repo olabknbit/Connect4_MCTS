@@ -13,9 +13,9 @@ class Node:
         self.value = 0
         self.no_visits = 0
         self.is_root = root
-        #to add function chcecking legal moves from this state
+        # to add function chcecking legal moves from this state
         self.unexpanded_moves = get_available_moves(_board)
-        self.column_val = col   #this node was produced by a move in this column
+        self.column_val = col  # this node was produced by a move in this column
 
     def visits(self):
         return self.no_visits
@@ -43,25 +43,25 @@ class MCTS:
     def monte_carlo_tree_search(self, root: Node):
         mcts_board = root.board
         while self.check_time():
-            #selection + expansion
+            # selection + expansion
             leaf, mcts_board = self.traverse(root, mcts_board)
-            #simulation
+            # simulation
             simulation_result = self.rollout(mcts_board)
-            #backpropagation
+            # backpropagation
             self.backpropagate(leaf, simulation_result)
         return self.best_child(root)
 
     def traverse(self, node: Node, mcts_board):
         while self.not_fully_expanded(node):
-            #selection: select best child
+            # selection: select best child
             node = self.best_uct(node)
             mcts_board = make_move(mcts_board, node.column_val, self.player_id)
 
         if node.unexpanded_moves != []:
-            #then expansion: add one new child node
+            # then expansion: add one new child node
             m = node.unexpanded_moves[random.choice(range(len(node.unexpanded_moves)))]
             mcts_board = make_move(mcts_board, m, self.player_id)
-            node = node.expand(node, move=m, state=mcts_board)
+            node = node.expand(move=m, state=mcts_board)
         return node, mcts_board
 
     def rollout(self, mcts_board):
