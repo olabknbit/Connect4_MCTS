@@ -26,7 +26,8 @@ class Node:
     def uct(self):
         if self.visits() == 0:
             return np.infty
-        return (self.value / self.no_visits) + (np.sqrt(2 * np.log(self.no_visits)) / self.no_visits)
+        # in numpy log(x) means ln(x)
+        return (self.value / self.no_visits) + (np.sqrt(2) * (np.sqrt(np.log(self.parent.no_visits) / self.no_visits)))
 
     def expand(self, move, state):
         child = Node(col=move, _parent=self, _board=state, root=False)
