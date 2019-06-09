@@ -1,4 +1,5 @@
 from connect4 import Connect4
+from game_finished_checker import BLUE
 
 
 def read_input(team):
@@ -18,7 +19,7 @@ def play_with_comptuter():
     while True:
         col = read_input("RED")
         c4.red_move(col)
-        c4.make_random_move(c4.BLUE)
+        c4.make_random_move(BLUE)
 
 
 def multiplayer():
