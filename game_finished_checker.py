@@ -53,3 +53,11 @@ def is_valid_move(board, col):
     if col < 0 or col > HEIGHT:
         return False
     return board[HEIGHT - 1][-1] == 0
+
+
+def get_available_moves(board):
+    moves = []
+    for col in range(WIDTH):
+        if is_valid_move(board, col):
+            moves.append(col)
+    return moves
