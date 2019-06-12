@@ -1,21 +1,20 @@
 import random
+from copy import deepcopy
 
 import numpy as np
 
-from game_finished_checker import check_if_game_finished, get_available_moves, make_move, COMPUTER,  get_result
-from copy import deepcopy
+from game_finished_checker import check_if_game_finished, get_available_moves, make_move, COMPUTER, get_result
 
 
 class Node:
-    def __init__(self, _board, _parent, col, player=COMPUTER, root=False):
+    def __init__(self, _board, _parent, col, player=COMPUTER):
         self.children = []
         self.board = deepcopy(_board)
         self.parent = _parent
         self.value = 0
         self.no_visits = 0
-        self.is_root = root
+        self.is_root = _parent is None
         self.player = player
-        self.is_leaf = False
         # to add function chcecking legal moves from this state
         self.unexpanded_moves = get_available_moves(_board)
         self.column_val = col  # this node was produced by a move in this column
@@ -30,7 +29,7 @@ class Node:
         return (self.value / self.no_visits) + (np.sqrt(2) * (np.sqrt(np.log(self.parent.no_visits) / self.no_visits)))
 
     def expand(self, move, state):
-        child = Node(col=move, _parent=self, _board=state, root=False)
+        child = Node(col=move, _parent=self, _board=state)
         self.unexpanded_moves.remove(move)
         self.children.append(child)
         return child
@@ -47,11 +46,6 @@ class MCTS:
         return (time() - self.start_time) < 5
 
     def monte_carlo_tree_search(self, root: Node):
-        # if get_available_moves(root.board):
-        #     mcts_board = deepcopy(root.board)
-        #     move = self.get_random_move(root.board)
-        #     mcts_board = make_move(mcts_board, move, self.player_id)
-        #     child = root.expand(move=move, state=mcts_board)
         while self.check_time():
             # selection + expansion
             leaf = self.traverse(root, deepcopy(root.board))
@@ -91,8 +85,6 @@ class MCTS:
         self.backpropagate(node.parent, result)
 
     def best_child(self, node: Node):
-        # if node.children == []:
-        #     return None
         return max(node.children, key=Node.uct)
 
     def get_random_move(self, board):
@@ -103,7 +95,6 @@ class MCTS:
         return children[random.choice(range(len(children)))]
 
     def best_uct(self, node: Node):
-        # print(node.children)
         if len(node.children) == 0:
             return None
         return max(node.children, key=Node.uct)
