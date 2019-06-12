@@ -17,7 +17,7 @@ def read_input(team):
     return col
 
 
-def play_with_comptuter():
+def play_with_computer():
     c4.print_board()
     while True:
         col = read_input("HUMAN")
@@ -36,4 +36,4 @@ def multiplayer():
 
 if __name__ == '__main__':
     c4 = Connect4()
-    play_with_comptuter()
+    play_with_computer()

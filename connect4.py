@@ -38,7 +38,7 @@ class Connect4:
 
     def make_mcts_move(self, player):
         from copy import deepcopy
-        root = Node(_board=deepcopy(self.board), _parent=None, col=-1, root=True)
+        root = Node(_board=deepcopy(self.board), _parent=None, col=-1)
         mcts = MCTS()
         decision = mcts.monte_carlo_tree_search(root)
         self._move(player, decision)
